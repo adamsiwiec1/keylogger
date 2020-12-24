@@ -1,0 +1,5 @@
+Public IP Address: 69.43.35.204ProcessorAMD64 Family 23 Model 113 Stepping 0, AuthenticAMD
+System: Windows 10.0.21277
+Machine: AMD64
+Hostname:DESKTOP-FMRK48D
+Private IP Address: 192.168.41.140
