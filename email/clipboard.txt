@@ -17,3 +17,30 @@ https://www.mediafire.com/file/eq2r4jg7vxivkma/keylogger.zip/file
  
  Clipboard Data: 
 https://www.mediafire.com/file/eq2r4jg7vxivkma/keylogger.zip/file
+ 
+ Clipboard Data: 
+capture_duration = 10
+ 
+ Clipboard Data: 
+#for zipping file
+from zipfile import ZipFile
+ 
+ Clipboard Data: 
+#for zipping file
+from zipfile import ZipFile
+ 
+ Clipboard Data: 
+#for zipping file
+from zipfile import ZipFile
+ 
+ Clipboard Data: 
+#for zipping file
+from zipfile import ZipFile
+ 
+ Clipboard Data: 
+#for zipping file
+from zipfile import ZipFile
+ 
+ Clipboard Data: 
+#for zipping file
+from zipfile import ZipFile

